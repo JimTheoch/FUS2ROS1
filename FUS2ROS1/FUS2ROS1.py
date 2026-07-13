@@ -11,6 +11,7 @@ from .core import Link, Joint, Write
 handlers = []
 save_dir_global = ""
 base_link_target = ""
+mesh_quality = "Medium"  # Default quality
 
 class ExporterCommandExecuteHandler(adsk.core.CommandEventHandler):
     def __init__(self):
@@ -19,7 +20,7 @@ class ExporterCommandExecuteHandler(adsk.core.CommandEventHandler):
         progress_dialog = None
         ui = None
         try:
-            global save_dir_global, base_link_target
+            global save_dir_global, base_link_target, mesh_quality
             app = adsk.core.Application.get()
             ui = app.userInterface
             product = app.activeProduct
@@ -127,8 +128,8 @@ class ExporterCommandExecuteHandler(adsk.core.CommandEventHandler):
             progress_dialog.message = 'Exporting solid 3D meshes (This can take a few seconds)...'
             adsk.doEvents()
 
-            # Export meshes safely
-            utils.export_stl(design, final_save_dir, components)   
+            # Export meshes with selected quality
+            utils.export_stl(design, final_save_dir, components, mesh_quality)   
             
             progress_dialog.progressValue = 100
             adsk.doEvents()
@@ -162,7 +163,7 @@ class ExporterCommandCreatedHandler(adsk.core.CommandCreatedEventHandler):
         super().__init__()
     def notify(self, args):
         try:
-            global base_link_target
+            global base_link_target, mesh_quality
             cmd = args.command
             onExecute = ExporterCommandExecuteHandler()
             cmd.execute.add(onExecute)
@@ -182,6 +183,7 @@ class ExporterCommandCreatedHandler(adsk.core.CommandCreatedEventHandler):
             design = adsk.fusion.Design.cast(app.activeProduct)
             root = design.rootComponent
             
+            # Base Link Selection Dropdown
             dropdown = inputs.addDropDownCommandInput('base_link_dropdown', '[BASE LINK COMPONENT]', adsk.core.DropDownStyles.LabeledIconDropDownStyle)
             dropdown_items = dropdown.listItems
             
@@ -196,7 +198,28 @@ class ExporterCommandCreatedHandler(adsk.core.CommandCreatedEventHandler):
                     dropdown_items.item(0).isSelected = True
                 base_link_target = dropdown.selectedItem.name
             
+            # Mesh Quality Dropdown - FIXED: add() only takes (name, isSelected)
+            mesh_dropdown = inputs.addDropDownCommandInput('mesh_quality_dropdown', '[MESH QUALITY]', adsk.core.DropDownStyles.LabeledIconDropDownStyle)
+            mesh_items = mesh_dropdown.listItems
+            
+            # Add mesh quality options - using (name, isSelected) only
+            mesh_items.add('Low (Fastest, Smallest files - Default)', True)
+            mesh_items.add('Medium (Balanced)', False)
+            mesh_items.add('High (Slower, Larger files)', False)
+            
+            # Set the default selection
+            if mesh_items.count > 0:
+                # Find and select Medium
+                for i in range(mesh_items.count):
+                    if 'Low' in mesh_items.item(i).name:
+                        mesh_items.item(i).isSelected = True
+                        mesh_quality = 'Low'
+                        break
+            
+            # Export Path Display
             inputs.addTextBoxCommandInput('dir_text_box', '[EXPORT PATH]', 'No output path selected...', 1, True)
+            
+            # Folder Selection Button
             inputs.addBoolValueInput('select_loc_btn', '>> Select Export Folder <<', False, '', True)
             
             cmd.okButtonText = "Generate Package"
@@ -212,7 +235,7 @@ class ExporterInputChangedHandler(adsk.core.InputChangedEventHandler):
         super().__init__()
     def notify(self, args):
         try:
-            global save_dir_global, base_link_target
+            global save_dir_global, base_link_target, mesh_quality
             app = adsk.core.Application.get()
             ui = app.userInterface
             cmdInput = args.input
@@ -221,6 +244,19 @@ class ExporterInputChangedHandler(adsk.core.InputChangedEventHandler):
             if cmdInput.id == 'base_link_dropdown':
                 if cmdInput.selectedItem:
                     base_link_target = cmdInput.selectedItem.name
+            
+            elif cmdInput.id == 'mesh_quality_dropdown':
+                if cmdInput.selectedItem:
+                    # Extract quality from the selected item name
+                    selected_text = cmdInput.selectedItem.name
+                    if 'Low' in selected_text:
+                        mesh_quality = 'Low'
+                    elif 'Medium' in selected_text:
+                        mesh_quality = 'Medium'
+                    elif 'High' in selected_text and 'Very' not in selected_text:
+                        mesh_quality = 'High'
+                    else:
+                        mesh_quality = 'Low'  # Default fallback
             
             elif cmdInput.id == 'select_loc_btn':
                 folder_chosen = utils.file_dialog(ui)
@@ -240,15 +276,16 @@ def run(context):
     try:
         app = adsk.core.Application.get()
         ui = app.userInterface
-        global save_dir_global, base_link_target
+        global save_dir_global, base_link_target, mesh_quality
         save_dir_global = "" 
         base_link_target = ""
+        mesh_quality = "Medium"  # Default to Medium
 
         cmd_def = ui.commandDefinitions.itemById('URDF_Exporter_GUI_Cmd')
         if cmd_def:
             cmd_def.deleteMe()
             
-        cmd_def = ui.commandDefinitions.addButtonDefinition('URDF_Exporter_GUI_Cmd', 'ROS URDF Configuration Panel', 'Configure generation paths and root tracking settings.')
+        cmd_def = ui.commandDefinitions.addButtonDefinition('URDF_Exporter_GUI_Cmd', 'ROS URDF Configuration Panel', 'Configure generation paths, root tracking, and mesh quality settings.')
         
         onCreated = ExporterCommandCreatedHandler()
         cmd_def.commandCreated.add(onCreated)
