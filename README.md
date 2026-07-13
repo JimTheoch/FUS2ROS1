@@ -1,4 +1,4 @@
-# FUS2ROS1 - Fusion 360 to ROS1 URDF Exporter
+# FUS2ROS1 - Fusion 360 to ROS1 Exporter
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![ROS1](https://img.shields.io/badge/ROS-Noetic-brightgreen)](http://wiki.ros.org/noetic)
