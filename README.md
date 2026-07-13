@@ -39,8 +39,8 @@ A Fusion 360 Python script that automatically generates a complete ROS1 package 
 4. Choose an **Export Folder** (your ROS workspace path)
 5. Click **Generate Package**
 
-## Output Structure
-```bash
+## 📂 Output Structure
+```
 your_robot_description/
 ├── urdf/
 │ ├── your_robot.xacro # Main URDF
@@ -52,7 +52,8 @@ your_robot_description/
 ├── launch/
 │ ├── display.launch # RViz visualization
 │ ├── gazebo.launch # Gazebo simulation
-│ └── controller.launch # ROS controllers
+│ ├── controller.launch # ROS controllers
+│ └── controller.yaml # PID controller configuration 
 ├── CMakeLists.txt
 └── package.xml
 ```
@@ -73,7 +74,7 @@ roslaunch your_robot_description gazebo.launch
 
 The exporter automatically creates PID controllers for each non-fixed joint:
 
-```bash
+```yaml
 your_robot_controller:
   joint_state_controller:
     type: joint_state_controller/JointStateController
