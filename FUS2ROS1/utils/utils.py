@@ -9,7 +9,7 @@ import shutil
 import fileinput
 import sys
 
-def export_stl(design, save_dir, components):  
+def export_stl(design, save_dir, components, quality="Medium"):  
     """
     export stl files into "save_dir/" without creating duplicate components
     
@@ -19,14 +19,28 @@ def export_stl(design, save_dir, components):
     save_dir: str
         directory path to save
     components: design.allComponents
+    quality: str
+        Mesh quality setting: 'Low', 'Medium', 'High'
     """
           
-    # create a single exportManager instance
+    # Create a single exportManager instance
     exportMgr = design.exportManager
-    # get the script location
+    # Get the script location
     try: os.mkdir(save_dir + '/meshes')
     except: pass
     scriptDir = save_dir + '/meshes'
+    
+    # Map quality strings to Fusion 360 MeshRefinement settings
+    # NOTE: Fusion 360 only supports Low, Medium, and High
+    quality_map = {
+        'Low': adsk.fusion.MeshRefinementSettings.MeshRefinementLow,
+        'Medium': adsk.fusion.MeshRefinementSettings.MeshRefinementMedium,
+        'High': adsk.fusion.MeshRefinementSettings.MeshRefinementHigh,
+        'VeryHigh': adsk.fusion.MeshRefinementSettings.MeshRefinementHigh  # Map VeryHigh to High
+    }
+    
+    # Default to Medium if quality not found
+    mesh_refinement = quality_map.get(quality, adsk.fusion.MeshRefinementSettings.MeshRefinementMedium)
     
     # Get all occurrences from root component
     root = design.rootComponent
@@ -47,10 +61,10 @@ def export_stl(design, save_dir, components):
             stlExportOptions = exportMgr.createSTLExportOptions(occ, fileName)
             stlExportOptions.sendToPrintUtility = False
             stlExportOptions.isBinaryFormat = True
-            stlExportOptions.meshRefinement = adsk.fusion.MeshRefinementSettings.MeshRefinementLow
+            stlExportOptions.meshRefinement = mesh_refinement
             
             exportMgr.execute(stlExportOptions)
-            print('Exported: ' + occ_name)
+            print('Exported: ' + occ_name + ' (Quality: ' + quality + ')')
             
         except Exception as e:
             print('Failed to export ' + occ.name + ': ' + str(e))
@@ -61,9 +75,9 @@ def export_stl(design, save_dir, components):
                 stlExportOptions = exportMgr.createSTLExportOptions(component, fileName)
                 stlExportOptions.sendToPrintUtility = False
                 stlExportOptions.isBinaryFormat = True
-                stlExportOptions.meshRefinement = adsk.fusion.MeshRefinementSettings.MeshRefinementLow
+                stlExportOptions.meshRefinement = mesh_refinement
                 exportMgr.execute(stlExportOptions)
-                print('Exported component: ' + component.name)
+                print('Exported component: ' + component.name + ' (Quality: ' + quality + ')')
             except:
                 print('Could not export ' + occ.name)
 
