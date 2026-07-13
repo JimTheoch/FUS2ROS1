@@ -5,6 +5,8 @@
 [![Python](https://img.shields.io/badge/Python-3.6+-blue.svg)](https://www.python.org/downloads/)
 [![Fusion 360](https://img.shields.io/badge/Fusion%20360-API-orange)](https://help.autodesk.com/view/fusion360/ENU/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+> **Fork Notice:** This project is a fork of [syuntoku14/fusion2urdf](https://github.com/syuntoku14/fusion2urdf). Special thanks to **Syuntoku14** for the original work and inspiration!
+
 
 A Fusion 360 Python script that automatically generates a complete ROS1 package with:
 - URDF/Xacro robot description
@@ -16,7 +18,7 @@ A Fusion 360 Python script that automatically generates a complete ROS1 package 
 ## Features
 - 🔄 Automatic joint detection and conversion (revolute, prismatic, continuous, fixed)
 - 📐 Physical properties extraction (mass, inertia, center of mass)
-- 🎨 Material and visual configuration
+- 🎨 Mesh Quality Selection - Choose from Low, Medium, or High quality STL exports
 - 🚀 ROS Control setup (position controllers)
 - 🤖 Gazebo simulation ready
 - 🧹 Automatic name sanitization (spaces → underscores)
@@ -34,6 +36,20 @@ A Fusion 360 Python script that automatically generates a complete ROS1 package 
 - **No Patterned Components**: Components created with patterns (rectangular, circular, or mirror) may not be properly recognized.
 
 - **No Derived Components**: Components derived from other designs may cause issues with the export process.
+
+### Mesh Export Limitations
+
+- **Three Quality Levels**: Fusion 360 API only supports Low, Medium, and High mesh refinement. "Very High" is not available.
+
+| Quality | File Size | Export Time | Detail Level | Best For |
+|---------|-----------|-------------|--------------|----------|
+| **Low** | Smallest | Fastest | Basic shape | Quick testing, simple geometries |
+| **Medium** | Medium | Moderate | Balanced | **Default**, most use cases |
+| **High** | Largest | Slower | Fine details | Detailed visualizations |
+
+- **Binary STL Format**: All meshes are exported as binary STL files for smaller file sizes.
+
+- **Large Assemblies**: Exporting very large assemblies with many components may take several minutes.
 
 ### Joint Type Limitations
 
