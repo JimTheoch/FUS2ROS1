@@ -21,6 +21,7 @@ A Fusion 360 Python script that automatically generates a complete ROS1 package 
 - 🤖 Gazebo simulation ready
 - 🧹 Automatic name sanitization (spaces → underscores)
 - 📁 Complete ROS package structure generation
+- ✅ No need for grounding/un-grounding parametric or direct modeling
 
 ## ⚠️ Limitations & Known Issues
 
