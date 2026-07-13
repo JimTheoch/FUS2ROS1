@@ -43,8 +43,8 @@ A Fusion 360 Python script that automatically generates a complete ROS1 package 
 
 | Quality | File Size | Export Time | Detail Level | Best For |
 |---------|-----------|-------------|--------------|----------|
-| **Low** | Smallest | Fastest | Basic shape | Quick testing, simple geometries |
-| **Medium** | Medium | Moderate | Balanced | **Default**, most use cases |
+| **Low** | Smallest | Fastest | Basic shape | **Default**, simple geometries |
+| **Medium** | Medium | Moderate | Balanced | Most use cases |
 | **High** | Largest | Slower | Fine details | Detailed visualizations |
 
 - **Binary STL Format**: All meshes are exported as binary STL files for smaller file sizes.
