@@ -59,18 +59,20 @@ your_robot_description/
 ## 🎮 Launch Your Robot
 
 ### Visualize in RViz
-
+```bash
 roslaunch your_robot_description display.launch
-
+```
 
 ### Simulate in Gazebo
-
+```bash
 roslaunch your_robot_description gazebo.launch
+```
 
 ## 🔧 Controller Configuration
 
 The exporter automatically creates PID controllers for each non-fixed joint:
 
+```bash
 your_robot_controller:
   joint_state_controller:
     type: joint_state_controller/JointStateController
@@ -80,6 +82,7 @@ your_robot_controller:
     type: effort_controllers/JointPositionController
     joint: joint1
     pid: {p: 100.0, i: 0.01, d: 10.0}
+```
 
 ## 🙏 Acknowledgments
 Syuntoku14 - Original fusion2urdf project that made this possible
