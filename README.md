@@ -1,2 +1,93 @@
-# FUS2ROS1
-Fusion 360 to ROS1 URDF Exporter - Convert Fusion 360 assemblies to ROS1 packages with URDF, Xacro, and Gazebo support
+# FUS2ROS1 - Fusion 360 to ROS1 URDF Exporter
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![ROS1](https://img.shields.io/badge/ROS-Noetic-brightgreen)](http://wiki.ros.org/noetic)
+[![Python](https://img.shields.io/badge/Python-3.6+-blue.svg)](https://www.python.org/downloads/)
+[![Fusion 360](https://img.shields.io/badge/Fusion%20360-API-orange)](https://help.autodesk.com/view/fusion360/ENU/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+
+A Fusion 360 Python script that automatically generates a complete ROS1 package with:
+- URDF/Xacro robot description
+- STL mesh files
+- Gazebo simulation files
+- ROS controllers configuration
+- Launch files
+
+## Features
+- 🔄 Automatic joint detection and conversion (revolute, prismatic, continuous, fixed)
+- 📐 Physical properties extraction (mass, inertia, center of mass)
+- 🎨 Material and visual configuration
+- 🚀 ROS Control setup (position controllers)
+- 🤖 Gazebo simulation ready
+- 🧹 Automatic name sanitization (spaces → underscores)
+- 📁 Complete ROS package structure generation
+
+## Installation
+
+1. Copy the script to your Fusion 360 Scripts directory:
+   - Windows: `%APPDATA%/Autodesk/Autodesk Fusion 360/API/Scripts/`
+   - Mac: `~/Library/Application Support/Autodesk/Autodesk Fusion 360/API/Scripts/`
+
+2. In Fusion 360, go to **Utilities/Tools → Add-Ins → Scripts and Add-Ins**
+3. Find the script and click **Run**
+
+## Usage
+
+1. Open your assembly in Fusion 360
+2. Run the FUS2ROS1 script
+3. Select the **Base Link Component** from the dropdown
+4. Choose an **Export Folder** (your ROS workspace path)
+5. Click **Generate Package**
+
+## Output Structure
+
+your_robot_description/
+├── urdf/
+│ ├── your_robot.xacro # Main URDF
+│ ├── materials.xacro # Material definitions
+│ ├── your_robot.trans # Transmission configurations
+│ └── your_robot.gazebo # Gazebo settings
+├── meshes/
+│ └── *.stl # 3D mesh files
+├── launch/
+│ ├── display.launch # RViz visualization
+│ ├── gazebo.launch # Gazebo simulation
+│ └── controller.launch # ROS controllers
+├── CMakeLists.txt
+└── package.xml
+
+## 🎮 Launch Your Robot
+
+### Visualize in RViz
+
+roslaunch your_robot_description display.launch
+
+
+### Simulate in Gazebo
+
+roslaunch your_robot_description gazebo.launch
+
+## 🔧 Controller Configuration
+
+The exporter automatically creates PID controllers for each non-fixed joint:
+
+your_robot_controller:
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+  joint1_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint1
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+
+## 🙏 Acknowledgments
+Syuntoku14 - Original fusion2urdf project that made this possible
+
+Masaki Yamamoto - For the coordinate transformation solution
+
+Autodesk - For Fusion 360 and its Python API
+
+Open Robotics - For ROS and Gazebo
+
+All contributors and users of the original fusion2urdf
