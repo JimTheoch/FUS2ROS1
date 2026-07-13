@@ -40,7 +40,7 @@ A Fusion 360 Python script that automatically generates a complete ROS1 package 
 5. Click **Generate Package**
 
 ## Output Structure
-
+```bash
 your_robot_description/
 ├── urdf/
 │ ├── your_robot.xacro # Main URDF
@@ -55,6 +55,7 @@ your_robot_description/
 │ └── controller.launch # ROS controllers
 ├── CMakeLists.txt
 └── package.xml
+```
 
 ## 🎮 Launch Your Robot
 
