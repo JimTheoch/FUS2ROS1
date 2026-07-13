@@ -22,6 +22,34 @@ A Fusion 360 Python script that automatically generates a complete ROS1 package 
 - 🧹 Automatic name sanitization (spaces → underscores)
 - 📁 Complete ROS package structure generation
 
+## ⚠️ Limitations & Known Issues
+
+### Assembly Structure Limitations
+
+- **No Nested Assemblies Support**: The exporter only works with flat assembly structures. Sub-assemblies (nested components) are not supported and will cause errors.
+  
+- **No In-Place Components**: Components created using "Create In-Place" feature may not export correctly. Use external components instead.
+
+- **No Patterned Components**: Components created with patterns (rectangular, circular, or mirror) may not be properly recognized.
+
+- **No Derived Components**: Components derived from other designs may cause issues with the export process.
+
+### Joint Type Limitations
+
+| Supported | Not Supported (or Partial) |
+|-----------|---------------------------|
+| ✅ Revolute | ❌ Cylindrical |
+| ✅ Prismatic | ❌ PinSlot |
+| ✅ Continuous | ❌ Planner |
+| ✅ Fixed | ❌ Ball |
+| | ❌ Screw |
+
+### Joint Limits Requirements
+
+- **Revolute joints**: Both upper and lower limits MUST be set. If only one limit is set or neither is set, the joint will be converted to `continuous` type.
+  
+- **Prismatic joints**: Both upper and lower limits MUST be set. If only one limit is set or neither is set, the export will fail with an error message.
+
 ## Installation
 
 1. Copy the script to your Fusion 360 Scripts directory:
