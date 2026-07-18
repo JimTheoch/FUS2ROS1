@@ -37,6 +37,8 @@ A Fusion 360 Python script that automatically generates a complete ROS1 package 
 
 - **No Derived Components**: Components derived from other designs may cause issues with the export process.
 
+- **Control+Z/ Undo after exporting is manadatory to revert chnages made to the Fusion CAD/document**.
+
 ### Mesh Export Limitations
 
 - **Three Quality Levels**: Fusion 360 API only supports Low, Medium, and High mesh refinement. "Very High" is not available.
