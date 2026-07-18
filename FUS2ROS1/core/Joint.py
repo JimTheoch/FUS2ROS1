@@ -1,7 +1,9 @@
-# Joint.py - Updated to replace spaces with underscores in joint names
-
 # -*- coding: utf-8 -*-
+"""
+Created on Sun May 12 20:17:17 2019
 
+@author: syuntoku
+"""
 
 import adsk, re
 from xml.etree.ElementTree import Element, SubElement
@@ -167,9 +169,6 @@ def make_joints_dict(root, msg):
         elif joint_type == 'fixed':
             pass
         
-        # Replace spaces and special characters with underscores in joint name
-        joint_name = re.sub('[ :()]', '_', joint.name)
-        
         if joint.occurrenceTwo.component.name == 'base_link':
             joint_dict['parent'] = 'base_link'
         else:
@@ -228,5 +227,5 @@ def make_joints_dict(root, msg):
                 msg = joint.name + " doesn't have joint origin. Please set it and run again."
                 break
         
-        joints_dict[joint_name] = joint_dict
+        joints_dict[joint.name] = joint_dict
     return joints_dict, msg

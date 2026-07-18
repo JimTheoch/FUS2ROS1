@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>%RobName%_description</name>
+  <name>%RobName%</name>
   <version>0.0.0</version>
-  <description>The %RobName%_description package</description>
+  <description>The %RobName% package</description>
 
-  <maintainer email="dimitristheoch@gmail.com">JimTheoch</maintainer>
-  <license>MIT</license>
+  <maintainer email="user@example.com">user</maintainer>
+  <license>BSD</license>
 
   <buildtool_depend>catkin</buildtool_depend>
   

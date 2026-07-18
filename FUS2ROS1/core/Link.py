@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+"""
+Created on Sun May 12 20:11:28 2019
 
+@author: syuntoku
+"""
 
 import adsk, re
 from xml.etree.ElementTree import Element, SubElement
@@ -7,7 +11,7 @@ from ..utils import utils
 
 class Link:
 
-    def __init__(self, name, xyz, center_of_mass, repo, mass, inertia_tensor):
+    def __init__(self, name, xyz, center_of_mass, repo, mass, inertia_tensor, material='silver'):
         """
         Parameters
         ----------
@@ -25,6 +29,8 @@ class Link:
             mass of the link
         inertia_tensor: [ixx, iyy, izz, ixy, iyz, ixz]
             tensor of the inertia
+        material: str
+            name of the material/color for this link
         """
         self.name = name
         # xyz for visual
@@ -35,6 +41,7 @@ class Link:
         self.repo = repo
         self.mass = mass
         self.inertia_tensor = inertia_tensor
+        self.material = material
         
     def make_link_xml(self):
         """
@@ -64,7 +71,7 @@ class Link:
         mesh_v = SubElement(geometry_v, 'mesh')
         mesh_v.attrib = {'filename':'package://' + self.repo + self.name + '.stl','scale':'0.001 0.001 0.001'}
         material = SubElement(visual, 'material')
-        material.attrib = {'name':'silver'}
+        material.attrib = {'name': self.material}
         
         # collision
         collision = SubElement(link, 'collision')
